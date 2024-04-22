@@ -1,15 +1,17 @@
+require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
 
+const route = require('./routes');
+
 const app = express();
-const host = 'localhost';
-const port = 8080;
+const host = process.env.HOST_NAME;
+const port = process.env.PORT || 8081;
 
 // HTTP logger
 app.use(morgan('combined'));
 
-app.get('/', (req, res) => {
-    res.send('Hello');
-});
+// Routes init
+route(app);
 
 app.listen(port, host, () => console.log(`Example app listening at http://localhost:${port}`));
