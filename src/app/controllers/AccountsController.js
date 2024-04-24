@@ -1,7 +1,14 @@
+const db = require('../models');
+
 class AccountsController {
     // [GET] /accounts
-    index(req, res) {
-        res.send('Accounts');
+    async index(req, res) {
+        try {
+            const data = await db.User.findAll();
+            return res.json(data);
+        } catch (error) {
+            console.log(error);
+        }
     }
 }
 

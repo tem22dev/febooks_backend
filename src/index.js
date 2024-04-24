@@ -3,7 +3,7 @@ const morgan = require('morgan');
 const dotenv = require('dotenv');
 
 const route = require('./routes');
-const db = require('./config/database');
+const db = require('./config/connectDB');
 dotenv.config();
 
 const app = express();
@@ -11,7 +11,7 @@ const host = process.env.HOST_NAME;
 const port = process.env.PORT || 8081;
 
 // Connect to db
-db.connect();
+// db.connect();
 
 // Middleware send data client to server (XMLHttpRequest, fetch, axios, JQuery(Ajax) ...)
 app.use(
@@ -22,9 +22,9 @@ app.use(
 app.use(express.json());
 
 // HTTP logger
-app.use(morgan('combined'));
+// app.use(morgan('combined'));
 
 // Routes init
 route(app);
 
-app.listen(port, host, () => console.log(`Example app listening at http://localhost:${port}`));
+app.listen(port, host, () => console.log(`App listening at http://localhost:${port}`));

@@ -1,7 +1,7 @@
 const accountRouter = require('./accounts');
 
 const route = (app) => {
-    app.use('/account', accountRouter);
+    app.use('/api/account', accountRouter);
 };
 
 module.exports = route;
