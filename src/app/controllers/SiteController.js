@@ -1,8 +1,8 @@
-class AccountsController {
+class SiteController {
     // [GET] /accounts
     index(req, res) {
-        res.send('Accounts');
+        return res.json([{}]);
     }
 }
 
-module.exports = new AccountsController();
+module.exports = new SiteController();
