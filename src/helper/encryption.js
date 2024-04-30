@@ -8,8 +8,8 @@ const hashPassword = (password) => {
     return hash;
 };
 
-const checkPassword = (password) => {
-    const isCheckPass = bcrypt.compareSync(password, hashPassword);
+const checkPassword = (password, hash) => {
+    const isCheckPass = bcrypt.compareSync(password, hash);
     return isCheckPass;
 };
 

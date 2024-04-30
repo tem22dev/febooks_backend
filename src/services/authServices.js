@@ -22,7 +22,7 @@ const registerService = async (userData) => {
         }
 
         // Hash user password
-        const hashPass = await encryption.hashPassword(userData.password);
+        const hashPass = encryption.hashPassword(userData.password);
 
         // Create new user
         const data = {
@@ -34,11 +34,11 @@ const registerService = async (userData) => {
         await query.create(db.User, data);
 
         return {
-            statusCode: 200,
             message: 'Đăng ký tài khoản thành công!',
             errCode: 0,
         };
     } catch (error) {
+        console.log(error);
         return {
             errMessage: 'Máy chủ không phản hồi',
             errCode: -2,
@@ -46,4 +46,39 @@ const registerService = async (userData) => {
     }
 };
 
-module.exports = { registerService };
+const loginService = async (rawData) => {
+    try {
+        // Check user
+        const isExistEmail = await query.findOne(db.User, { email: rawData.email });
+        if (isExistEmail) {
+            const data = await query.getData(db.User, { email: rawData.email });
+            const isCheckPass = encryption.checkPassword(rawData.password, data.password);
+
+            if (isCheckPass) {
+                return {
+                    message: 'Đăng nhập tài khoản thành công!',
+                    errCode: 0,
+                    data: data,
+                };
+            }
+            return {
+                errMessage: 'Thông tin đăng nhập không chính xác!',
+                errCode: 1,
+                data: '',
+            };
+        }
+        return {
+            errMessage: 'Thông tin đăng nhập không chính xác!',
+            errCode: 1,
+            data: '',
+        };
+    } catch (error) {
+        console.log(error);
+        return {
+            errMessage: 'Máy chủ không phản hồi',
+            errCode: -2,
+        };
+    }
+};
+
+module.exports = { registerService, loginService };

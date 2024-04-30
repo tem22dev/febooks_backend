@@ -10,13 +10,6 @@ dotenv.config();
 const app = express();
 const host = process.env.HOST_NAME;
 const port = process.env.PORT || 8081;
-
-// Fix CORS
-app.use(cors());
-
-// Connect to db
-// db.connect();
-
 // Middleware send data client to server (XMLHttpRequest, fetch, axios, JQuery(Ajax) ...)
 app.use(
     express.urlencoded({
@@ -24,6 +17,12 @@ app.use(
     }),
 );
 app.use(express.json());
+
+// Fix CORS
+app.use(cors());
+
+// Connect to db
+// db.connect();
 
 // HTTP logger
 // app.use(morgan('combined'));
