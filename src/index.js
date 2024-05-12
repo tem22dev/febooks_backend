@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 
 const route = require('./routes');
@@ -10,6 +11,7 @@ dotenv.config();
 const app = express();
 const host = process.env.HOST_NAME;
 const port = process.env.PORT || 8081;
+
 // Middleware send data client to server (XMLHttpRequest, fetch, axios, JQuery(Ajax) ...)
 app.use(
     express.urlencoded({
@@ -18,8 +20,11 @@ app.use(
 );
 app.use(express.json());
 
+// Cookie
+app.use(cookieParser());
+
 // Fix CORS
-app.use(cors());
+app.use(cors({ origin: process.env.URL_REACT, credentials: true }));
 
 // Connect to db
 // db.connect();
