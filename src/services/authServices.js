@@ -34,6 +34,7 @@ const registerService = async (userData) => {
             email: userData.email,
             phone: userData.phone,
             password: hashPass,
+            avatar: 'default-avatar.png',
         };
         await query.create(db.User, data);
 

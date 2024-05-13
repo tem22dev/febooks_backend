@@ -3,6 +3,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
+const path = require('path');
 
 const route = require('./routes');
 const db = require('./config/connectDB');
@@ -11,6 +12,9 @@ dotenv.config();
 const app = express();
 const host = process.env.HOST_NAME;
 const port = process.env.PORT || 8081;
+
+// Static file
+app.use(express.static(path.join(__dirname, 'public/')));
 
 // Middleware send data client to server (XMLHttpRequest, fetch, axios, JQuery(Ajax) ...)
 app.use(
