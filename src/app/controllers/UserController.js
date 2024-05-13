@@ -17,6 +17,19 @@ class AuthController {
             });
         }
     }
+
+    // [GET]: /search
+    async searchUser(req, res) {
+        try {
+            const data = await user.searchUserService(req.query);
+            return res.status(200).json(data);
+        } catch (error) {
+            return res.status(500).json({
+                errMessage: 'Lỗi từ server',
+                errCode: 1,
+            });
+        }
+    }
 }
 
 module.exports = new AuthController();
