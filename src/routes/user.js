@@ -22,6 +22,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 router.post('/upload/avatar', upload.single('avatar'), userController.uploadAvatarUser);
+router.post('/import/bulk-create', userController.importBulkCreateUser);
 router.get('/search', userController.searchUser);
 router.post('/create', userController.createUser);
 router.get('/', userController.getAllUser);

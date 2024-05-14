@@ -112,4 +112,45 @@ const createUserService = async (user) => {
     }
 };
 
-module.exports = { getAllUserService, searchUserService, createUserService };
+const importUserService = async (data) => {
+    try {
+        let errors = [];
+
+        // Use for...of with async/await for sequential processing
+        for (const [index, item] of data.entries()) {
+            // Check if email/phone exists
+            const isExistEmail = await query.findOne(db.User, { email: item.email });
+            const isExistPhone = await query.findOne(db.User, { phone: item.phone });
+
+            if (isExistEmail || isExistPhone) {
+                errors.push(index + 1);
+            } else if (errors.length === 0) {
+                // Hash user password
+                item.password = encryption.hashPassword(item.password);
+                item.avatar = 'default-avatar.png';
+            }
+        }
+
+        // If no errors, perform bulk create
+        if (errors.length === 0) {
+            const countSuccess = await db.User.bulkCreate(data);
+            return {
+                message: `Đã thêm ${data.length} tài khoản người dùng thành công!`,
+                errCode: 0,
+            };
+        }
+
+        return {
+            errMessage: errors,
+            errCode: 1,
+        };
+    } catch (error) {
+        console.log(error);
+        return {
+            errMessage: 'Máy chủ không phản hồi',
+            errCode: -2,
+        };
+    }
+};
+
+module.exports = { getAllUserService, searchUserService, createUserService, importUserService };

@@ -63,6 +63,19 @@ class AuthController {
             });
         }
     }
+
+    // [POST]: /import/bulk-create
+    async importBulkCreateUser(req, res) {
+        try {
+            const data = await user.importUserService(req.body);
+            return res.status(200).json(data);
+        } catch (error) {
+            return res.status(500).json({
+                errMessage: 'Lỗi từ server',
+                errCode: 1,
+            });
+        }
+    }
 }
 
 module.exports = new AuthController();
