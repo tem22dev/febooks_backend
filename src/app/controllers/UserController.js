@@ -76,6 +76,19 @@ class AuthController {
             });
         }
     }
+
+    // [POST]: /update
+    async updateUser(req, res) {
+        try {
+            const data = await user.updateUserService(req.body);
+            return res.status(200).json(data);
+        } catch (error) {
+            return res.status(500).json({
+                errMessage: 'Lỗi từ server',
+                errCode: 1,
+            });
+        }
+    }
 }
 
 module.exports = new AuthController();

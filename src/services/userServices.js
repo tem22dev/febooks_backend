@@ -153,4 +153,60 @@ const importUserService = async (data) => {
     }
 };
 
-module.exports = { getAllUserService, searchUserService, createUserService, importUserService };
+const updateUserService = async (user) => {
+    try {
+        console.log(user);
+        // Check email/phone are exist
+        const isExistEmail = await query.findOne(db.User, { email: user.email });
+        if (!isExistEmail) {
+            return {
+                errMessage: 'Tài khoản không tồn tại, kiểm tra lại email!',
+                errCode: 1,
+            };
+        }
+
+        const isExistPhone = await query.findOne(db.User, {
+            phone: user.phone,
+            email: {
+                [Op.ne]: user.email,
+            },
+        });
+
+        if (isExistPhone) {
+            return {
+                errMessage: 'Số điện thoại đã được đăng ký!',
+                errCode: 1,
+            };
+        }
+
+        if (!!user.password) {
+            // Hash user password
+            const hashPass = encryption.hashPassword(user.password);
+            user.password = hashPass;
+        }
+
+        if (typeof user.avatar === 'object') {
+            user.avatar = 'default-avatar.png';
+        }
+
+        // Update user
+        await db.User.update(user, {
+            where: {
+                email: user.email,
+            },
+        });
+
+        return {
+            message: 'Cập nhật tài khoản thành công!',
+            errCode: 0,
+        };
+    } catch (error) {
+        console.log(error);
+        return {
+            errMessage: 'Máy chủ không phản hồi',
+            errCode: -2,
+        };
+    }
+};
+
+module.exports = { getAllUserService, searchUserService, createUserService, importUserService, updateUserService };

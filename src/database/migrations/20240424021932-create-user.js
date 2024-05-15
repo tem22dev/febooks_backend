@@ -23,6 +23,7 @@ module.exports = {
             },
             gender: {
                 type: Sequelize.STRING,
+                defaultValue: '',
             },
             address: {
                 type: Sequelize.STRING,

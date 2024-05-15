@@ -8,8 +8,6 @@ const userController = require('../app/controllers/UserController');
 // Thiết lập multer cho việc upload file avatar
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        console.log(__dirname);
-        console.log(path);
         cb(null, path.join(__dirname, '..', 'public', 'images', 'accounts'));
     },
     filename: function (req, file, cb) {
@@ -24,6 +22,7 @@ const upload = multer({ storage: storage });
 router.post('/upload/avatar', upload.single('avatar'), userController.uploadAvatarUser);
 router.post('/import/bulk-create', userController.importBulkCreateUser);
 router.get('/search', userController.searchUser);
+router.post('/update', userController.updateUser);
 router.post('/create', userController.createUser);
 router.get('/', userController.getAllUser);
 
