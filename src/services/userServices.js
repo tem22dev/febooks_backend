@@ -155,7 +155,6 @@ const importUserService = async (data) => {
 
 const updateUserService = async (user) => {
     try {
-        console.log(user);
         // Check email/phone are exist
         const isExistEmail = await query.findOne(db.User, { email: user.email });
         if (!isExistEmail) {
@@ -209,4 +208,46 @@ const updateUserService = async (user) => {
     }
 };
 
-module.exports = { getAllUserService, searchUserService, createUserService, importUserService, updateUserService };
+const deleteUserService = async (idDelete, idAuthor) => {
+    try {
+        if (parseInt(idDelete) === idAuthor) {
+            return {
+                errCode: 1,
+                errMessage: 'Bạn không thể xoá chính mình 😂',
+            };
+        }
+        const user = await db.User.findByPk(idDelete);
+        if (user.role === 'admin') {
+            return {
+                errCode: 1,
+                errMessage: 'Tài khoản ngang cấp không thể xoá 😂',
+            };
+        }
+        if (!user) {
+            return {
+                errCode: 1,
+                errMessage: 'Không tìm thấy người dùng',
+            };
+        }
+
+        await user.destroy();
+        return {
+            message: 'Xoá người dùng thành công!',
+            errCode: 0,
+        };
+    } catch (error) {
+        return {
+            error: 'Đã xảy ra lỗi khi xóa người dùng',
+            errCode: 1,
+        };
+    }
+};
+
+module.exports = {
+    getAllUserService,
+    searchUserService,
+    createUserService,
+    importUserService,
+    updateUserService,
+    deleteUserService,
+};

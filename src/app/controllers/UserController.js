@@ -49,13 +49,10 @@ class AuthController {
         try {
             // Nếu không có file được tải lên, trả về lỗi
             if (!req.file) {
-                return res.status(400).json({ message: 'No file uploaded' });
+                return res.status(400).json({ message: 'Không có tập tin nào được tải lên' });
             }
             // Trả về thông tin về file đã được tải lên
-            res.json({ message: 'Avatar uploaded successfully', file: req.file });
-
-            // const data = await user.searchUserService(req.query);
-            // return res.status(200).json(data);
+            res.json({ message: 'Hình đại diện đã được tải lên thành công', file: req.file });
         } catch (error) {
             return res.status(500).json({
                 errMessage: 'Lỗi từ server',
@@ -77,7 +74,7 @@ class AuthController {
         }
     }
 
-    // [POST]: /update
+    // [PUT]: /update
     async updateUser(req, res) {
         try {
             const data = await user.updateUserService(req.body);
@@ -87,6 +84,22 @@ class AuthController {
                 errMessage: 'Lỗi từ server',
                 errCode: 1,
             });
+        }
+    }
+
+    // [DELETE]: /delete/:id
+    async deleteUser(req, res) {
+        try {
+            const authHeader = req.headers['authorization'];
+            if (authHeader) {
+                // Kiểm tra xem header Authorization có chứa token Bearer không
+                const token = authHeader.split(' ')[1];
+                const validToken = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+                const data = await user.deleteUserService(req.params.id, validToken.id);
+                return res.status(200).json(data);
+            }
+        } catch (error) {
+            return res.status(500).json({ error: 'Đã xảy ra lỗi khi xóa người dùng' });
         }
     }
 }

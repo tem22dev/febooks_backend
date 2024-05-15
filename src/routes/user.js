@@ -21,8 +21,9 @@ const upload = multer({ storage: storage });
 
 router.post('/upload/avatar', upload.single('avatar'), userController.uploadAvatarUser);
 router.post('/import/bulk-create', userController.importBulkCreateUser);
+router.delete('/delete/:id', userController.deleteUser);
 router.get('/search', userController.searchUser);
-router.post('/update', userController.updateUser);
+router.put('/update', userController.updateUser);
 router.post('/create', userController.createUser);
 router.get('/', userController.getAllUser);
 
