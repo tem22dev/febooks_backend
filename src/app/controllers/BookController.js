@@ -2,13 +2,13 @@ const jwt = require('jsonwebtoken');
 const ms = require('ms');
 require('dotenv').config();
 
-const user = require('../../services/userServices');
+const book = require('../../services/bookServices');
 
-class UserController {
+class BookController {
     // [GET]: /
-    async getAllUser(req, res) {
+    async getAllBook(req, res) {
         try {
-            const data = await user.getAllUserService();
+            const data = await book.getAllBookService();
             return res.status(200).json(data);
         } catch (error) {
             return res.status(500).json({
@@ -19,9 +19,9 @@ class UserController {
     }
 
     // [GET]: /search
-    async searchUser(req, res) {
+    async searchBook(req, res) {
         try {
-            const data = await user.searchUserService(req.query);
+            const data = await book.searchBookService(req.query);
             return res.status(200).json(data);
         } catch (error) {
             return res.status(500).json({
@@ -32,9 +32,9 @@ class UserController {
     }
 
     // [POST]: /create
-    async createUser(req, res) {
+    async createBook(req, res) {
         try {
-            const data = await user.createUserService(req.body);
+            const data = await book.createBookService(req.body);
             return res.status(200).json(data);
         } catch (error) {
             return res.status(500).json({
@@ -45,7 +45,7 @@ class UserController {
     }
 
     // [POST]: /upload/avatar
-    async uploadAvatarUser(req, res) {
+    async uploadAvatarBook(req, res) {
         try {
             // Nếu không có file được tải lên, trả về lỗi
             if (!req.file) {
@@ -62,9 +62,9 @@ class UserController {
     }
 
     // [POST]: /import/bulk-create
-    async importBulkCreateUser(req, res) {
+    async importBulkCreateBook(req, res) {
         try {
-            const data = await user.importUserService(req.body);
+            const data = await book.importBookService(req.body);
             return res.status(200).json(data);
         } catch (error) {
             return res.status(500).json({
@@ -75,9 +75,9 @@ class UserController {
     }
 
     // [PUT]: /update
-    async updateUser(req, res) {
+    async updateBook(req, res) {
         try {
-            const data = await user.updateUserService(req.body);
+            const data = await book.updateBookService(req.body);
             return res.status(200).json(data);
         } catch (error) {
             return res.status(500).json({
@@ -88,14 +88,14 @@ class UserController {
     }
 
     // [DELETE]: /delete/:id
-    async deleteUser(req, res) {
+    async deleteBook(req, res) {
         try {
             const authHeader = req.headers['authorization'];
             if (authHeader) {
                 // Kiểm tra xem header Authorization có chứa token Bearer không
                 const token = authHeader.split(' ')[1];
                 const validToken = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
-                const data = await user.deleteUserService(req.params.id, validToken.id);
+                const data = await book.deleteBookService(req.params.id, validToken.id);
                 return res.status(200).json(data);
             }
         } catch (error) {
@@ -104,4 +104,4 @@ class UserController {
     }
 }
 
-module.exports = new UserController();
+module.exports = new BookController();
