@@ -84,9 +84,6 @@ module.exports = {
             thumbnail: {
                 type: Sequelize.STRING,
             },
-            slider: {
-                type: Sequelize.TEXT,
-            },
             description: {
                 type: Sequelize.TEXT,
             },

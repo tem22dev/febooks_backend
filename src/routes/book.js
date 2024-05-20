@@ -8,7 +8,7 @@ const bookController = require('../app/controllers/BookController');
 // Thiết lập multer cho việc upload file avatar
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '..', 'public', 'images', 'accounts'));
+        cb(null, path.join(__dirname, '..', 'public', 'images', 'books'));
     },
     filename: function (req, file, cb) {
         // Đặt tên file mới dựa trên thời gian upload và extension của file
@@ -19,12 +19,18 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// router.post('/upload/avatar', upload.single('avatar'), bookController.uploadAvatarUser);
+router.post('/upload/image', upload.single('book'), bookController.uploadImageBook);
 // router.post('/import/bulk-create', bookController.importBulkCreateUser);
 // router.delete('/delete/:id', bookController.deleteUser);
-router.get('/search', bookController.searchBook);
 // router.put('/update', bookController.updateUser);
-// router.post('/create', bookController.createUser);
+router.post('/create', bookController.createBook);
+router.get('/cate/author', bookController.getAllAuthor);
+router.get('/cate/genre', bookController.getAllGenre);
+router.get('/cate/publisher', bookController.getAllPublisher);
+router.get('/cate/supplier', bookController.getAllSupplier);
+router.get('/cate/language', bookController.getAllLanguage);
+router.get('/search', bookController.searchBook);
+router.get('/sliders', bookController.getSliderBook);
 router.get('/', bookController.getAllBook);
 
 module.exports = router;

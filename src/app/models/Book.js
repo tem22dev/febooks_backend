@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
             Book.belongsTo(models.Publisher, { foreignKey: 'publisherID' });
             Book.belongsTo(models.Supplier, { foreignKey: 'supplierID' });
             Book.belongsTo(models.Language, { foreignKey: 'languageID' });
+            Book.hasMany(models.SliderBook, { foreignKey: 'bookID' });
         }
     }
     Book.init(
@@ -28,7 +29,6 @@ module.exports = (sequelize, DataTypes) => {
             formality: DataTypes.STRING,
             packagingSize: DataTypes.STRING,
             thumbnail: DataTypes.STRING,
-            slider: DataTypes.STRING,
             description: DataTypes.TEXT,
             // Foreign keys
             authorID: DataTypes.INTEGER,
