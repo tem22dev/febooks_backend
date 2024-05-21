@@ -388,23 +388,43 @@ const createBookService = async (book) => {
 
 const updateBookService = async (book) => {
     try {
-        const isExistISBN = await query.findOne(db.Book, {
-            ISBN: book.ISBN,
-            id: {
-                [Op.ne]: book.id,
-            },
-        });
-
-        if (isExistISBN) {
-            return {
-                errMessage: 'Số ISBN đã được đăng ký!',
-                errCode: 1,
-            };
+        if (!!book.ISBN) {
+            const isExistISBN = await query.findOne(db.Book, {
+                ISBN: book.ISBN,
+                id: {
+                    [Op.ne]: book.id,
+                },
+            });
+            if (isExistISBN) {
+                return {
+                    errMessage: 'Số ISBN đã được đăng ký!',
+                    errCode: 1,
+                };
+            }
         }
+
         const { slider, ...rest } = book;
 
+        const data = {
+            ISBN: rest?.ISBN,
+            genreID: rest?.nameGenre,
+            description: rest?.description,
+            formality: rest?.formality,
+            authorID: rest?.nameAuthor,
+            publisherID: rest?.namePublisher,
+            supplierID: rest?.nameSupplier,
+            numOfPage: rest?.numOfPage,
+            price: rest?.price,
+            publicationYear: rest?.publicationYear,
+            quantityAvailable: rest?.quantityAvailable,
+            quantitySold: rest?.quantitySold,
+            title: rest?.title,
+            packagingSize: rest?.packagingSize,
+            languageID: rest?.language,
+            thumbnail: rest?.thumbnail,
+        };
         // Update book
-        await db.Book.update(rest, {
+        await db.Book.update(data, {
             where: {
                 id: rest.id,
             },
@@ -436,40 +456,24 @@ const updateBookService = async (book) => {
     }
 };
 
-// const deleteBookService = async (idDelete, idAuthor) => {
-//     try {
-//         if (parseInt(idDelete) === idAuthor) {
-//             return {
-//                 errCode: 1,
-//                 errMessage: 'Bạn không thể xoá chính mình 😂',
-//             };
-//         }
-//         const user = await db.Book.findByPk(idDelete);
-//         if (user.role === 'admin') {
-//             return {
-//                 errCode: 1,
-//                 errMessage: 'Tài khoản ngang cấp không thể xoá 😂',
-//             };
-//         }
-//         if (!user) {
-//             return {
-//                 errCode: 1,
-//                 errMessage: 'Không tìm thấy người dùng',
-//             };
-//         }
-
-//         await user.destroy();
-//         return {
-//             message: 'Xoá người dùng thành công!',
-//             errCode: 0,
-//         };
-//     } catch (error) {
-//         return {
-//             error: 'Đã xảy ra lỗi khi xóa người dùng',
-//             errCode: 1,
-//         };
-//     }
-// };
+const deleteBookService = async (id) => {
+    try {
+        await db.Book.destroy({
+            where: {
+                id: id,
+            },
+        });
+        return {
+            message: 'Xoá sách thành công!',
+            errCode: 0,
+        };
+    } catch (error) {
+        return {
+            error: 'Đã xảy ra lỗi khi xóa sách',
+            errCode: 1,
+        };
+    }
+};
 
 module.exports = {
     getAllBookService,
@@ -484,5 +488,5 @@ module.exports = {
     createBookService,
     // importBookService,
     updateBookService,
-    // deleteBookService,
+    deleteBookService,
 };

@@ -20,8 +20,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 router.post('/upload/image', upload.single('book'), bookController.uploadImageBook);
-// router.post('/import/bulk-create', bookController.importBulkCreateUser);
-// router.delete('/delete/:id', bookController.deleteUser);
+// router.post('/import/bulk-create', bookController.importBulkCreateBook);
+router.delete('/delete/:id', bookController.deleteBook);
 router.put('/update', bookController.updateBook);
 router.post('/create', bookController.createBook);
 router.get('/cate/author', bookController.getAllAuthor);
