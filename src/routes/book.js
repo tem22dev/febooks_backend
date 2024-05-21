@@ -22,7 +22,7 @@ const upload = multer({ storage: storage });
 router.post('/upload/image', upload.single('book'), bookController.uploadImageBook);
 // router.post('/import/bulk-create', bookController.importBulkCreateUser);
 // router.delete('/delete/:id', bookController.deleteUser);
-// router.put('/update', bookController.updateUser);
+router.put('/update', bookController.updateBook);
 router.post('/create', bookController.createBook);
 router.get('/cate/author', bookController.getAllAuthor);
 router.get('/cate/genre', bookController.getAllGenre);
@@ -31,6 +31,7 @@ router.get('/cate/supplier', bookController.getAllSupplier);
 router.get('/cate/language', bookController.getAllLanguage);
 router.get('/search', bookController.searchBook);
 router.get('/sliders', bookController.getSliderBook);
+router.get('/one-book', bookController.getBookById);
 router.get('/', bookController.getAllBook);
 
 module.exports = router;

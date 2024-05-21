@@ -31,6 +31,19 @@ class BookController {
         }
     }
 
+    // [GET]: /one-book
+    async getBookById(req, res) {
+        try {
+            const data = await book.getBookByIdService(req.query);
+            return res.status(200).json(data);
+        } catch (error) {
+            return res.status(500).json({
+                errMessage: 'Lỗi từ server',
+                errCode: 1,
+            });
+        }
+    }
+
     // [GET]: /search
     async searchBook(req, res) {
         try {
@@ -152,18 +165,18 @@ class BookController {
     //     }
     // }
 
-    // // [PUT]: /update
-    // async updateBook(req, res) {
-    //     try {
-    //         const data = await book.updateBookService(req.body);
-    //         return res.status(200).json(data);
-    //     } catch (error) {
-    //         return res.status(500).json({
-    //             errMessage: 'Lỗi từ server',
-    //             errCode: 1,
-    //         });
-    //     }
-    // }
+    // [PUT]: /update
+    async updateBook(req, res) {
+        try {
+            const data = await book.updateBookService(req.body);
+            return res.status(200).json(data);
+        } catch (error) {
+            return res.status(500).json({
+                errMessage: 'Lỗi từ server',
+                errCode: 1,
+            });
+        }
+    }
 
     // // [DELETE]: /delete/:id
     // async deleteBook(req, res) {

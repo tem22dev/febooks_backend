@@ -9,7 +9,6 @@ const encryption = require('../helper/encryption');
 
 const getAllBookService = async () => {
     try {
-        // console.log(123);
         const books = await db.Book.findAll({
             attributes: [
                 'id',
@@ -69,7 +68,6 @@ const getAllBookService = async () => {
 const getSliderBookByIdService = async (obj) => {
     try {
         if (obj.idBook) {
-            console.log(123);
             const listSlider = await db.SliderBook.findAll({
                 where: {
                     bookID: obj.idBook,
@@ -77,6 +75,28 @@ const getSliderBookByIdService = async (obj) => {
             });
             return {
                 data: listSlider,
+                errCode: 0,
+            };
+        }
+    } catch (error) {
+        return {
+            errMessage: error,
+            errCode: -2,
+        };
+    }
+};
+
+const getBookByIdService = async (obj) => {
+    try {
+        if (obj?.id) {
+            const book = await db.Book.findOne({
+                where: {
+                    id: obj.id,
+                },
+            });
+
+            return {
+                data: book,
                 errCode: 0,
             };
         }
@@ -128,7 +148,6 @@ const searchBookService = async (params) => {
                 'formality',
                 'packagingSize',
                 'thumbnail',
-                'slider',
                 'description',
                 'createdAt',
                 'updatedAt',
@@ -143,6 +162,21 @@ const searchBookService = async (params) => {
                     model: db.Genres,
                     attributes: ['nameGenre'],
                     where: genreWhere,
+                },
+                {
+                    model: db.Language,
+                    attributes: ['nameLanguage'],
+                    // where: languageWhere,
+                },
+                {
+                    model: db.Supplier,
+                    attributes: ['nameSupplier'],
+                    // where: supplierWhere,
+                },
+                {
+                    model: db.Publisher,
+                    attributes: ['namePublisher'],
+                    // where: publisher,
                 },
             ],
             where: bookWhere,
@@ -352,60 +386,55 @@ const createBookService = async (book) => {
 //     }
 // };
 
-// const updateBookService = async (user) => {
-//     try {
-//         // Check email/phone are exist
-//         const isExistEmail = await query.findOne(db.Book, { email: user.email });
-//         if (!isExistEmail) {
-//             return {
-//                 errMessage: 'Tài khoản không tồn tại, kiểm tra lại email!',
-//                 errCode: 1,
-//             };
-//         }
+const updateBookService = async (book) => {
+    try {
+        const isExistISBN = await query.findOne(db.Book, {
+            ISBN: book.ISBN,
+            id: {
+                [Op.ne]: book.id,
+            },
+        });
 
-//         const isExistPhone = await query.findOne(db.Book, {
-//             phone: user.phone,
-//             email: {
-//                 [Op.ne]: user.email,
-//             },
-//         });
+        if (isExistISBN) {
+            return {
+                errMessage: 'Số ISBN đã được đăng ký!',
+                errCode: 1,
+            };
+        }
+        const { slider, ...rest } = book;
 
-//         if (isExistPhone) {
-//             return {
-//                 errMessage: 'Số điện thoại đã được đăng ký!',
-//                 errCode: 1,
-//             };
-//         }
+        // Update book
+        await db.Book.update(rest, {
+            where: {
+                id: rest.id,
+            },
+        });
 
-//         if (!!user.password) {
-//             // Hash user password
-//             const hashPass = encryption.hashPassword(user.password);
-//             user.password = hashPass;
-//         }
+        // Update Slider
+        const dataSlider = slider.map((item) => ({
+            bookID: rest.id,
+            filename: item,
+        }));
 
-//         if (typeof user.avatar === 'object') {
-//             user.avatar = 'default-avatar.png';
-//         }
+        await db.SliderBook.destroy({
+            where: {
+                bookID: rest.id,
+            },
+        });
+        await db.SliderBook.bulkCreate(dataSlider);
 
-//         // Update user
-//         await db.Book.update(user, {
-//             where: {
-//                 email: user.email,
-//             },
-//         });
-
-//         return {
-//             message: 'Cập nhật tài khoản thành công!',
-//             errCode: 0,
-//         };
-//     } catch (error) {
-//         console.log(error);
-//         return {
-//             errMessage: 'Máy chủ không phản hồi',
-//             errCode: -2,
-//         };
-//     }
-// };
+        return {
+            message: 'Cập nhật sách thành công!',
+            errCode: 0,
+        };
+    } catch (error) {
+        console.log(error);
+        return {
+            errMessage: 'Máy chủ không phản hồi',
+            errCode: -2,
+        };
+    }
+};
 
 // const deleteBookService = async (idDelete, idAuthor) => {
 //     try {
@@ -445,6 +474,7 @@ const createBookService = async (book) => {
 module.exports = {
     getAllBookService,
     getSliderBookByIdService,
+    getBookByIdService,
     searchBookService,
     getAuthorService,
     getGenreService,
@@ -453,6 +483,6 @@ module.exports = {
     getLanguageService,
     createBookService,
     // importBookService,
-    // updateBookService,
+    updateBookService,
     // deleteBookService,
 };
