@@ -32,6 +32,7 @@ router.get('/cate/language', bookController.getAllLanguage);
 router.get('/search', bookController.searchBook);
 router.get('/sliders', bookController.getSliderBook);
 router.get('/one-book', bookController.getBookById);
+router.get('/sort', bookController.getAllBookSort);
 router.get('/', bookController.getAllBook);
 
 module.exports = router;
